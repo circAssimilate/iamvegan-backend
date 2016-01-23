@@ -45,15 +45,16 @@ def userIDreturn(deviceID, name):
                             name=name,
                             primary="vegan")
             user.put()
-            return {"userID" : user.userID, "date" : user.date, "name" : user.name, "primary" : user.primary, "secondary" : user.secondary}
+            query_dict = {"userID" : user.userID, "date" : user.date.strftime('%m/%d/%Y'), "name" : user.name, "primary" : user.primary, "secondary" : user.secondary}
+            return query_dict
         else:
             userIDreturn(deviceID, name)
     else:
         query = ID_query.fetch()[0]
         query.name = name
         query.put()
-
-        return {"userID" : query.userID, "date" : query.date, "name" : query.name, "primary" : query.primary, "secondary" : query.secondary}
+        query_dict = {"userID" : query.userID, "date" : query.date.strftime('%m/%d/%Y'), "name" : query.name, "primary" : query.primary, "secondary" : query.secondary}
+        return query_dict
 ##
 # Classes
 ##
@@ -69,7 +70,8 @@ class User(webapp2.RequestHandler):
         name = self.request.get('name')
         if deviceID is not "" and name is not "":
             userID = userIDreturn(deviceID, name)
-            self.response.out.write(userID)
+            self.response.headers['Content-Type'] = 'application/json'
+            self.response.out.write(json.dumps(userID))
         elif userID is not "" and deviceID is "" and name is "":
             user_query = UserInfo.query(UserInfo.userID == userID)
             try:
@@ -78,7 +80,9 @@ class User(webapp2.RequestHandler):
                 self.response.out.write("No user found.")
             else:
                 query = user_query.fetch()[0]
-                self.response.out.write({"userID" : query.userID, "date" : query.date, "name" : query.name, "primary" : query.primary, "secondary" : query.secondary})
+                query_dict = {"userID" : query.userID, "date" : query.date.strftime('%m/%d/%Y'), "name" : query.name, "primary" : query.primary, "secondary" : query.secondary}
+                self.response.headers['Content-Type'] = 'application/json'
+                self.response.out.write(json.dumps(query_dict))
         else:
             self.response.out.write("Incorrect url format.")
 

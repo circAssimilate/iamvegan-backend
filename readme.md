@@ -18,5 +18,11 @@ https://sigma-kayak-119906.appspot.com/user?user_id=5824
 ###Response format
 
 ```
-{'date': datetime.datetime(2016, 1, 23, 10, 36, 56, 965910), 'secondary': u'none', 'userID': u'5824', 'name': u'Peter', 'primary': u'vegan'}
+{
+    "date": "01/23/2016",
+    "secondary": "none",
+    "userID": "5824",
+    "name": "Peter",
+    "primary": "vegan"
+}
 ```
