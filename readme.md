@@ -2,27 +2,22 @@
 
 ###Example of creating or updating a user
 
-Only accepts a url with these paramters to store the device ID or update the name:
+`https://sigma-kayak-119906.appspot.com/user?device_id=67EADC65-1C39-42CA-95CC-7EF8692B68C7&name=John`
 
-`https://sigma-kayak-119906.appspot.com/user?device_id=2342&name=Peter`
+###Example of returning user info
 
-- It will create a unique, 4 digit ID if the device ID doesn't already exist, or return the existing information if it does
-- If you push the same device ID with a different "name" parameter, it will update the record with the new name
+`https://sigma-kayak-119906.appspot.com/user?device_id=67EADC65-1C39-42CA-95CC-7EF8692B68C7`
 
-###Example of returning user info via user ID
-
-Only accepts a url with this paramter to return the user information:
-
-https://sigma-kayak-119906.appspot.com/user?user_id=5824
+- It will store the unique device ID if the device ID doesn't already exist. If `name` is not present, the name defaults to "Vegan". If it does exist, it will return the existing information
+- If you push the same device ID with a `name` parameter, it will update the record with the value of `name`
 
 ###Response format
 
 ```
 {
     "date": "01/23/2016",
-    "secondary": "none",
-    "userID": "5824",
-    "name": "Peter",
-    "primary": "vegan"
+    "primary": "vegan",
+    "deviceID": "67EADC65-1C39-42CA-95CC-7EF8692B68C7",
+    "name": "John"
 }
 ```
