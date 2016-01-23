@@ -75,12 +75,12 @@ class User(webapp2.RequestHandler):
             try:
                 user_query.fetch()[0]
             except:
-                self.response.out.write("No such user")
+                self.response.out.write("No user found.")
             else:
                 query = user_query.fetch()[0]
                 self.response.out.write({"userID" : query.userID, "date" : query.date, "name" : query.name, "primary" : query.primary, "secondary" : query.secondary})
         else:
-            self.response.out.write("Invalid Endpoint")
+            self.response.out.write("Incorrect url format.")
 
 
 app = webapp2.WSGIApplication([
