@@ -1,3 +1,5 @@
+# iamvegan-backend
+
 Register:
     If exists:
         Will send an ID
@@ -5,12 +7,8 @@ Register:
         Will return a user ID
 
 Users:
-    Indenfication:
+    Indentification:
         Vegan
 
 Round 2 ideas:
     Pics
-
-# iamvegan-backend
-# iamvegan-backend
-# iamvegan-backend

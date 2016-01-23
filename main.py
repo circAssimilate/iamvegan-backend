@@ -1,25 +1,76 @@
-#!/usr/bin/env python
-#
-# Copyright 2007 Google Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
+# App Engine
 import webapp2
+import os
+# import jinja2
+import random
+from google.appengine.ext import ndb
+# import datetime
+import json
+# import urllib
 
-class MainHandler(webapp2.RequestHandler):
+from google.appengine.ext import ndb
+
+##
+# Models
+##
+
+class UserInfo(ndb.Model):
+    deviceID = ndb.StringProperty(default='')
+    userID = ndb.StringProperty(default='')
+    name = ndb.StringProperty(default='Veganite')
+    primary = ndb.StringProperty(default='vegan')
+    secondary = ndb.StringProperty(default='none')
+    date = ndb.DateTimeProperty(auto_now_add=True)
+
+##
+# Functions
+##
+
+# Generates user IDs
+def userIDreturn(deviceID, name):
+    userID = ''.join(random.choice('123456789') for i in range(4))
+    # userID = ''.join(random.choice('1234') for i in range(1))
+
+    ID_query = UserInfo.query(UserInfo.deviceID == deviceID)
+    userID_query = UserInfo.query(UserInfo.userID == userID)
+
+    try:
+        ID_query.fetch()[0]
+    except:
+        try:
+            userID_query.fetch()[0]
+        except:
+            user = UserInfo(deviceID=deviceID,
+                            userID=userID,
+                            name=name,
+                            primary="vegan")
+            user.put()
+            return {"userID" : user.userID, "date" : user.date, "name" : user.name, "primary" : user.primary, "secondary" : user.secondary}
+        else:
+            userIDreturn(deviceID, name)
+    else:
+        query = ID_query.fetch()[0]
+        query.name = name
+        query.put()
+
+        return {"userID" : query.userID, "date" : query.date, "name" : query.name, "primary" : query.primary, "secondary" : query.secondary}
+##
+# Classes
+##
+
+class Main(webapp2.RequestHandler):
     def get(self):
-        self.response.write('Hello world!')
+        self.response.write("You shouldn't be here.")
+
+class User(webapp2.RequestHandler):
+    def get(self):
+        deviceID = self.request.get('device_id')
+        name = self.request.get('name')
+        userID = userIDreturn(deviceID, name)
+        self.response.out.write(userID)
+
 
 app = webapp2.WSGIApplication([
-    ('/', MainHandler)
+    ('/', Main),
+    ('/user', User)
 ], debug=True)
