@@ -65,9 +65,22 @@ class Main(webapp2.RequestHandler):
 class User(webapp2.RequestHandler):
     def get(self):
         deviceID = self.request.get('device_id')
+        userID = self.request.get('user_id')
         name = self.request.get('name')
-        userID = userIDreturn(deviceID, name)
-        self.response.out.write(userID)
+        if deviceID is not "" and name is not "":
+            userID = userIDreturn(deviceID, name)
+            self.response.out.write(userID)
+        elif userID is not "" and deviceID is "" and name is "":
+            user_query = UserInfo.query(UserInfo.userID == userID)
+            try:
+                user_query.fetch()[0]
+            except:
+                self.response.out.write("No such user")
+            else:
+                query = user_query.fetch()[0]
+                self.response.out.write({"userID" : query.userID, "date" : query.date, "name" : query.name, "primary" : query.primary, "secondary" : query.secondary})
+        else:
+            self.response.out.write("Invalid Endpoint")
 
 
 app = webapp2.WSGIApplication([
